@@ -138,7 +138,7 @@ class MainViewModel @Inject constructor(
             val inputStream: InputStream = connection.getInputStream()
             val file = File(
                 Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES),
-                "${character.name}_thumbnail.jpg"
+                "${character.name}_${System.currentTimeMillis()}_thumbnail.jpg"
             )
             val fos = FileOutputStream(file)
             val buffer = ByteArray(1024)
