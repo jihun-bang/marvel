@@ -1,5 +1,6 @@
 package com.example.marvel.presentation
 
+import android.Manifest
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -44,10 +45,12 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import com.example.marvel.data.models.CharacterEntity
 import com.example.marvel.ui.theme.MarvelTheme
+import com.google.accompanist.permissions.ExperimentalPermissionsApi
+import com.google.accompanist.permissions.isGranted
+import com.google.accompanist.permissions.rememberPermissionState
 import dagger.hilt.android.AndroidEntryPoint
 
 
@@ -57,6 +60,7 @@ class MainActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
         setContent {
             MarvelTheme {
                 Surface(
@@ -215,19 +219,33 @@ private fun BottomNavigation(viewModel: MainViewModel, modifier: Modifier = Modi
     }
 }
 
+@OptIn(ExperimentalPermissionsApi::class)
 @Composable
 fun CharacterCell(
     character: CharacterEntity,
     download: () -> Unit,
     onFavoriteClick: () -> Unit,
 ) {
+    val writePermissionState = rememberPermissionState(
+        Manifest.permission.WRITE_EXTERNAL_STORAGE
+    )
+    val readPermissionState = rememberPermissionState(
+        Manifest.permission.READ_EXTERNAL_STORAGE
+    )
+
     Column(
         modifier = Modifier
             .padding(16.dp)
             .fillMaxWidth()
             .clip(MaterialTheme.shapes.medium)
             .clickable {
-                download.invoke()
+                if (!writePermissionState.status.isGranted) {
+                    writePermissionState.launchPermissionRequest()
+                } else if (!writePermissionState.status.isGranted) {
+                    readPermissionState.launchPermissionRequest()
+                } else {
+                    download.invoke()
+                }
             }
             .background(color = Color.Gray),
         verticalArrangement = Arrangement.Center,

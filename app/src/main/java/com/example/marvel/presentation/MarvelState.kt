@@ -7,5 +7,5 @@ data class MarvelState(
     val isLoading: Boolean = false,
     val isMoreLoading: Boolean = false,
     val isHome: Boolean = true,
-    val error: String? = null
+    val error: String? = null,
 )
