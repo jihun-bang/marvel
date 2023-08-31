@@ -241,7 +241,7 @@ fun CharacterCell(
             .clickable {
                 if (!writePermissionState.status.isGranted) {
                     writePermissionState.launchPermissionRequest()
-                } else if (!writePermissionState.status.isGranted) {
+                } else if (!readPermissionState.status.isGranted) {
                     readPermissionState.launchPermissionRequest()
                 } else {
                     download.invoke()
